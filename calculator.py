@@ -6,12 +6,6 @@
 
 import sys
 
-operations = {
-    "add"       : (lambda a, b : a + b),
-    "subtract"  : (lambda a, b : a - b),
-    "multiply"  : (lambda a, b : a * b),    
-}
-
 # 'registry' is a tree structure represented by a dictionary of lists.
 # When an expression is evaluated, the tree is recursively traversed.
 #         foo
@@ -25,6 +19,11 @@ operations = {
 #  2       3
 # 
 registry = {}
+operations = {
+    "add"       : (lambda a, b : a + b),
+    "subtract"  : (lambda a, b : a - b),
+    "multiply"  : (lambda a, b : a * b),    
+}
 
 def print_help() :
     print("Invalid input!") 
@@ -34,7 +33,7 @@ def print_help() :
     print(" - quit")
 
 # Recursively evaluates expression and calculates result of all operations
-# "expression" is an array of pairs: ['add', 'foo'], [multiply, bar], [suctract, 2]
+# "expression" is an array of pairs, e.g ['add', 'foo'], [multiply, bar], [suctract, 2]
 def evaluate_expression(expression, curr_depth) :
     curr_depth += 1 
     if(curr_depth >= sys.getrecursionlimit()) :
@@ -44,7 +43,6 @@ def evaluate_expression(expression, curr_depth) :
     for op in expression :
         oper = op[0]
         rvalue = op[1]
-
         # If rvalue is an int, it should simply be added/subtracted/multiplied
         try :
             result = operations[oper](result, int(rvalue))
@@ -70,7 +68,7 @@ def parse_input(input_strings) :
     elif(no_inputs == 2) :
         if(input_strings[0] == "print") :
             reg = input_strings[1]
-            if( reg in(registry) ) : # Check if key exists in registry
+            if(reg in(registry)) : # Check if key exists in registry
                 try :
                     print(evaluate_expression(registry[reg], 0))
                 except RecursionError:
@@ -93,6 +91,12 @@ def parse_input(input_strings) :
             print("'" + lvalue + "' is not a valid registry name!")
             return
 
+        # Validate oper
+        if(oper not in operations) :
+            print("'" + oper + "' is not a valid operation!")
+            print_help()
+            return
+
         # Validate rvalue
         try : 
             int(rvalue) # If rvalue is an int we dont need to add it to the registry
@@ -104,13 +108,7 @@ def parse_input(input_strings) :
                 print("'" + rvalue + "' is not a valid registry name!")
                 return 
 
-        # Validate oper
-        if(oper not in operations) :
-            print("'" + oper + "' is not a valid operation!")
-            print_help()
-            return
-
-        # All inputs have been validated
+        # All inputs have been validated and we can safely append the operation to the node 'lvalue'
         registry[lvalue].append([oper, rvalue])
 
     else :
