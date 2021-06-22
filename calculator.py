@@ -4,6 +4,8 @@
 # 2021-06-21
 # Adam Söderström
 
+import sys
+
 operations = {
     "add"       : (lambda a, b : a + b),
     "subtract"  : (lambda a, b : a - b),
@@ -33,8 +35,11 @@ def print_help() :
 
 # Recursively evaluates expression and calculates result of all operations
 # "expression" is an array of pairs: ['add', 'foo'], [multiply, bar], [suctract, 2]
-def evaluate_expression(expression) :
-    # TODO Handle infinite recursion, i.e [foo add bar], [bar add foo]
+def evaluate_expression(expression, curr_depth) :
+    curr_depth += 1 
+    if(curr_depth >= sys.getrecursionlimit()) :
+        raise RecursionError
+
     result = 0
     for op in expression :
         oper = op[0]
@@ -45,7 +50,7 @@ def evaluate_expression(expression) :
             result = operations[oper](result, int(rvalue))
         except ValueError :
             if(rvalue in registry) :# If rvalue is a register, it has to be evaluated first.
-                result = operations[oper](result, evaluate_expression(registry[rvalue]))
+                result = operations[oper](result, evaluate_expression(registry[rvalue], curr_depth))
             else : # If rvalue is not in registry, it is regarded to be zero.
                 result = operations[oper](result, 0)
     return result
@@ -68,7 +73,10 @@ def parse_input(input_strings) :
         if(input_strings[0] == "print") :
             reg = input_strings[1]
             if( reg in(registry) ) : # Check if key exists in registry
-                    print(evaluate_expression(registry[reg]))
+                try :
+                    print(evaluate_expression(registry[reg], 0))
+                except RecursionError:
+                    print("Recursion error!")
             else : 
                 print("register '" + reg + "' is not defined!")
         else : 
@@ -105,7 +113,7 @@ def parse_input(input_strings) :
             return
 
         # All inputs have been validated
-        registry[lvalue].append([oper, rvalue])
+        registry[lvalue].append([oper, rvalue]) # TODO use ".oper = " instead
 
     else :
         print_help()
