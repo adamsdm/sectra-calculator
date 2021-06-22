@@ -72,7 +72,7 @@ def parse_input(input_strings) :
                 try :
                     print(evaluate_expression(registry[reg], 0))
                 except RecursionError:
-                    print("Recursion error!")
+                    print("Recursion error! Maybe you have cross referenced registers?")
             else : 
                 print("register '" + reg + "' is not defined!")
         else : 

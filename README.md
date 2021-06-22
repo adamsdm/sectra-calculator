@@ -8,3 +8,6 @@ Time spent: ~3h
 Execute script with:
 `> python.exe \calculator.py [file_path]` to run from file or 
 `> python.exe \calculator.py` to run interactively.
+
+## Known issues
+* Cross references are possible and may result in infinite recursion
