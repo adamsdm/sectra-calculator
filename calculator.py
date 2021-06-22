@@ -12,8 +12,8 @@ operations = {
     "multiply"  : (lambda a, b : a * b),    
 }
 
-# 'registry' is a tree structure represented by a dictionary.
-# When an expression is evaluated, the tree is recursively traversed
+# 'registry' is a tree structure represented by a dictionary of lists.
+# When an expression is evaluated, the tree is recursively traversed.
 #         foo
 #         / \ 
 #       add sub
@@ -85,23 +85,23 @@ def parse_input(input_strings) :
         oper   = input_strings[1] # input_strings[1] should always be an operation
         rvalue = input_strings[2] # input_strings[2] could either be a register or an integer
         
-        # Validate lvalue
-        if(lvalue.isalnum()) :# Is lvalue alphanumerical? TODO: lvalue shall not have same names as in operations
+        # Validate lvalue  # TODO: Move to function
+        if(lvalue.isalnum() and lvalue not in operations) :
             if(lvalue not in registry) : # add lvalue to registry if not already present
                 registry[lvalue] = []
         else :
-            print(lvalue + " is not alphanumerical!")
+            print("'" + lvalue + "' is not a valid registry name!")
             return
 
-        # Validate rvalue
+        # Validate rvalue # TODO: Move to function
         try : 
             int(rvalue) # If rvalue is an int we dont need to add it to the registry
         except ValueError:
-            if(rvalue.isalnum()) : # Is lvalue alphanumerical? TODO: lvalue shall not have same names as in operations
-                if(lvalue not in registry) : # add rvalue to registry if not already present
-                    registry[rvalue] = [] # TODO: Handle cross reference
+            if(rvalue.isalnum()  and rvalue not in operations) :
+                if(rvalue not in registry) : # add rvalue to registry if not already present
+                    registry[rvalue] = []
             else :
-                print(lvalue + " is not alphanumerical!")
+                print("'" + rvalue + "' is not a valid registry name!")
                 return 
 
         # Validate oper
