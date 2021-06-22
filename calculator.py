@@ -1,10 +1,27 @@
 #!/usr/bin/python3
 
+# Calculator.py
+# 2021-06-21
+# Adam Söderström
+
 operations = {
     "add"       : (lambda a, b : a + b),
     "subtract"  : (lambda a, b : a - b),
     "multiply"  : (lambda a, b : a * b),    
 }
+
+# 'registry' is a tree structure represented by a dictionary.
+# When an expression is evaluated, the tree is recursively traversed
+#         foo
+#         / \ 
+#       add sub
+#       /     \
+#     bar     10
+#     / \
+#   add mult
+#   /     \
+#  2       3
+# 
 registry = {}
 
 def print_help() :
@@ -14,7 +31,10 @@ def print_help() :
     print(" - print <register>")
     print(" - quit")
 
+# Recursively evaluates expression and calculates result of all operations
+# "expression" is an array of pairs: ['add', 'foo'], [multiply, bar], [suctract, 2]
 def evaluate_expression(expression) :
+    # TODO Handle infinite recursion, i.e [foo add bar], [bar add foo]
     result = 0
     for op in expression :
         oper = op[0]
@@ -30,8 +50,8 @@ def evaluate_expression(expression) :
                 result = operations[oper](result, 0)
     return result
 
-
-
+# Parses and validates input from an array of strings
+# input_strings is an array consisting of [rvalue, operator, lvalue]
 def parse_input(input_strings) :
     no_inputs = len(input_strings)
     # Validate inputs
@@ -48,8 +68,7 @@ def parse_input(input_strings) :
         if(input_strings[0] == "print") :
             reg = input_strings[1]
             if( reg in(registry) ) : # Check if key exists in registry
-                result = evaluate_expression(registry[reg])
-                print(result)
+                    print(evaluate_expression(registry[reg]))
             else : 
                 print("register '" + reg + "' is not defined!")
         else : 
@@ -61,22 +80,22 @@ def parse_input(input_strings) :
         rvalue = input_strings[2] # input_strings[2] could either be a register or an integer
         
         # Validate lvalue
-        if(lvalue.isalnum()) :# Is lvalue alphanumerical?
+        if(lvalue.isalnum()) :# Is lvalue alphanumerical? TODO: lvalue shall not have same names as in operations
             if(lvalue not in registry) : # add lvalue to registry if not already present
                 registry[lvalue] = []
         else :
-            print(lvalue + " is not an valid identifier!")
+            print(lvalue + " is not alphanumerical!")
             return
 
         # Validate rvalue
         try : 
             int(rvalue) # If rvalue is an int we dont need to add it to the registry
         except ValueError:
-            if(rvalue.isalnum()) : # Is lvalue alphanumerical?
+            if(rvalue.isalnum()) : # Is lvalue alphanumerical? TODO: lvalue shall not have same names as in operations
                 if(lvalue not in registry) : # add rvalue to registry if not already present
-                    registry[rvalue] = []
+                    registry[rvalue] = [] # TODO: Handle cross reference
             else :
-                print(lvalue + " is not an valid identifier!")
+                print(lvalue + " is not alphanumerical!")
                 return 
 
         # Validate oper
@@ -93,12 +112,11 @@ def parse_input(input_strings) :
     
 
 def run_calculator() :
-
     # TODO: Handle file input
 
     # Main loop
     while True :
-        parse_input( input(">> ").lower().split() )
+        parse_input(input(">> ").lower().split())
 
 if __name__ == "__main__" :
     run_calculator()
