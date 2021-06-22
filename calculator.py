@@ -63,7 +63,7 @@ def parse_input(input_strings) :
     if(no_inputs == 1) :
         if(input_strings[0] == "quit") :
             print("Goodbye!")
-            exit()
+            exit(0)
         else : 
             print_help()
 
@@ -116,13 +116,31 @@ def parse_input(input_strings) :
     else :
         print_help()
     
+def run_calc_from_file(fpath) :
+    # Try to read file
+    try :
+        f = open(fpath, "r")
+        lines = f.readlines()
+        for l in lines :
+            parse_input(l.lower().split())
+        f.close()
+        exit(0)
+    except FileNotFoundError :
+        print("File not found: '" + fpath + "'")
+        exit(1)
 
-def run_calculator() :
-    # TODO: Handle file input
-
+def run_calc_interactively() :
     # Main loop
     while True :
         parse_input(input(">> ").lower().split())
+    
+def run_calculator() :
+    if(len(sys.argv) > 1) :
+        fpath = sys.argv[1]
+        run_calc_from_file(fpath)
+    else :
+        run_calc_interactively()
+    
 
 if __name__ == "__main__" :
     run_calculator()
