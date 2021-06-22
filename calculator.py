@@ -85,7 +85,7 @@ def parse_input(input_strings) :
         oper   = input_strings[1] # input_strings[1] should always be an operation
         rvalue = input_strings[2] # input_strings[2] could either be a register or an integer
         
-        # Validate lvalue  # TODO: Move to function
+        # Validate lvalue
         if(lvalue.isalnum() and lvalue not in operations) :
             if(lvalue not in registry) : # add lvalue to registry if not already present
                 registry[lvalue] = []
@@ -93,7 +93,7 @@ def parse_input(input_strings) :
             print("'" + lvalue + "' is not a valid registry name!")
             return
 
-        # Validate rvalue # TODO: Move to function
+        # Validate rvalue
         try : 
             int(rvalue) # If rvalue is an int we dont need to add it to the registry
         except ValueError:
@@ -111,7 +111,7 @@ def parse_input(input_strings) :
             return
 
         # All inputs have been validated
-        registry[lvalue].append([oper, rvalue]) # TODO use ".oper = " instead
+        registry[lvalue].append([oper, rvalue])
 
     else :
         print_help()
