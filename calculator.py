@@ -64,8 +64,6 @@ def parse_input(input_strings) :
         if(input_strings[0] == "quit") :
             print("Goodbye!")
             exit()
-        elif(input_strings[0] == "dump") : #TODO REMOVE
-            print(registry)
         else : 
             print_help()
 
